@@ -17,9 +17,13 @@ import java.util.logging.Logger;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.action.ConnectProvider;
 import org.netbeans.api.visual.action.ConnectorState;
+import org.netbeans.api.visual.anchor.AnchorFactory;
+import org.netbeans.api.visual.anchor.AnchorShape;
 import org.netbeans.api.visual.vmd.VMDNodeWidget;
 import org.netbeans.api.visual.vmd.VMDPinWidget;
+import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
@@ -57,19 +61,18 @@ preferredID = "BrickVisualizerTopComponent")
 public final class BrickVisualizerTopComponent extends TopComponent {
 
     private List<Device> uniqueDevices = new ArrayList<Device>();
+    final Scene scene = new Scene();
+    final LayerWidget baseLayer = new LayerWidget(scene);
+    final LayerWidget connectionLayer = new LayerWidget(scene);
 
     public BrickVisualizerTopComponent() {
         initComponents();
         setName(Bundle.CTL_BrickVisualizerTopComponent());
         setToolTipText(Bundle.HINT_BrickVisualizerTopComponent());
 
-        // create scene
-        final Scene scene = new Scene();
-
         // add baseLayer to scene
-        final LayerWidget baseLayer = new LayerWidget(scene);
         scene.addChild(baseLayer);
-
+        scene.addChild(connectionLayer);
 
         // make the scene accept things
         scene.getActions().addAction(ActionFactory.createAcceptAction(new AcceptProvider() {
@@ -103,9 +106,13 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                         simpleWidget.setNodeName(device.getClass().getSimpleName());
                         simpleWidget.setNodeImage(node.getIcon(BeanInfo.ICON_COLOR_16x16));
                         simpleWidget.setPreferredLocation(point);
-                        simpleWidget.getActions().addAction(ActionFactory.createMoveAction());
                         simpleWidget.setCheckClipping(true);
                         baseLayer.addChild(simpleWidget);
+                        
+                        // add the ability to connect devices
+                        simpleWidget.getActions().addAction(ActionFactory.createExtendedConnectAction(connectionLayer, new DeviceConnectorProvider()));
+                        // add the ability to move the device
+                        simpleWidget.getActions().addAction(ActionFactory.createMoveAction());
 
                         // show device-specific information
                         try {
@@ -121,13 +128,13 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                                 pin.setPinName("Swag: " + poti.getPosition());
                                 simpleWidget.addChild(pin);
 
-//                                poti.setPositionCallbackPeriod(100);
-//                                poti.addListener(new BrickletLinearPoti.PositionListener() {
-//                                    @Override
-//                                    public void position(int position) {
-//                                        pin.setPinName("Swag: " + position);
-//                                    }
-//                                });
+                                poti.setPositionCallbackPeriod(100);
+                                poti.addListener(new BrickletLinearPoti.PositionListener() {
+                                    @Override
+                                    public void position(int position) {
+                                        pin.setPinName("Swag: " + position);
+                                    }
+                                });
                             }
                         } catch (TimeoutException ex) {
                             ex.printStackTrace();
@@ -187,5 +194,39 @@ public final class BrickVisualizerTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    private class DeviceConnectorProvider implements ConnectProvider {
+
+        @Override
+        public boolean isSourceWidget(Widget source) {
+            return source instanceof VMDNodeWidget;
+        }
+
+        @Override
+        public ConnectorState isTargetWidget(Widget source, Widget target) {
+            return !source.equals(target)
+                    && target instanceof VMDNodeWidget ? ConnectorState.ACCEPT : ConnectorState.REJECT;
+        }
+
+        @Override
+        public boolean hasCustomTargetWidgetResolver(Scene scene) {
+            return false;
+        }
+
+        @Override
+        public Widget resolveTargetWidget(Scene scene, Point point) {
+            return null;
+        }
+
+        @Override
+        public void createConnection(Widget source, Widget target) {
+            ConnectionWidget connection = new ConnectionWidget(scene);
+            connection.setTargetAnchorShape(AnchorShape.TRIANGLE_HOLLOW);
+            connection.setSourceAnchor(AnchorFactory.createRectangularAnchor(source));
+            connection.setTargetAnchor(AnchorFactory.createRectangularAnchor(target));
+            
+            connectionLayer.addChild(connection);
+        }
     }
 }
