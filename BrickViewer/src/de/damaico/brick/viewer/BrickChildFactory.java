@@ -26,19 +26,17 @@ import com.tinkerforge.BrickletTemperatureIR;
 import com.tinkerforge.BrickletVoltage;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.IPConnection.TimeoutException;
 import de.damaico.brick.viewer.nodes.AmbientLightNode;
 import de.damaico.brick.viewer.nodes.BrickMasterNode;
 import de.damaico.brick.viewer.nodes.DistanceIRNode;
 import de.damaico.brick.viewer.nodes.IO16Node;
 import de.damaico.brick.viewer.nodes.LCD2044Node;
 import de.damaico.brick.viewer.nodes.LinearPotiNode;
-import java.awt.Color;
 import java.beans.IntrospectionException;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
@@ -47,12 +45,13 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
 
     private final String host = "localhost";
     private final int port = 4223;
+    private IPConnection ipc;
 
     //THIS METHOD IS AUTOMATICALLY CALLED IN THE BACKGROUND:
     @Override
     protected boolean createKeys(final List<DeviceIdentifier> list) {
         try {
-            IPConnection ipc = new IPConnection(host, port);
+            ipc = new IPConnection(host, port);
             ipc.enumerate(new IPConnection.EnumerateListener() {
                 @Override
                 public void enumerate(String uid, String name, short stackID, boolean isNew) {
@@ -131,12 +130,14 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
                     nodes.add(new LCD2044Node(device));
                     break;
                 case "Master Brick":
-                    device = new BrickMaster(tmpDM.getUid());
-                    nodes.add(new BrickMasterNode(device));
+                    BrickMaster bm = new BrickMaster(tmpDM.getUid());
+                    device  = bm;
+                    nodes.add(new BrickMasterNode(bm));
                     break;
                 case "Linear Poti Bricklet":
-                    device = new BrickletLinearPoti(tmpDM.getUid());
-                    nodes.add(new LinearPotiNode(device));
+                    BrickletLinearPoti blp = new BrickletLinearPoti(tmpDM.getUid());
+                    device = blp;
+                    nodes.add(new LinearPotiNode(blp));
                     break;
                 case "Rotary Poti Bricklet":
                     device = new BrickletRotaryPoti(tmpDM.getUid());
@@ -163,6 +164,15 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
                 case "StepDown Brick":
                 case "RS485 Extension":
             }
+
+            try {
+                if (device != null) {
+                    ipc.addDevice(device);
+                }
+            } catch (TimeoutException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
             model.setDeviceType(device);
         } catch (IntrospectionException ex) {
             Exceptions.printStackTrace(ex);
