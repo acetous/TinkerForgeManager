@@ -13,6 +13,7 @@ import java.awt.datatransfer.Transferable;
 import java.beans.BeanInfo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
@@ -95,7 +96,7 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                     if (device != null) {
                         // add device
                         uniqueDevices.add(device);
-                        
+
                         // create widget
                         VMDNodeWidget simpleWidget;
                         simpleWidget = new VMDNodeWidget(scene);
@@ -114,17 +115,27 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                                 pin.setPinName("Temperature: " + bm.getChipTemperature());
                                 simpleWidget.addChild(pin);
                             } else if (device instanceof BrickletLinearPoti) {
-                                BrickletLinearPoti blp = (BrickletLinearPoti) device;
-                                VMDPinWidget pin = new VMDPinWidget(scene);
-                                pin.setPinName("Swag: " + blp.getPosition());
+                                final BrickletLinearPoti poti = (BrickletLinearPoti) device;
+                                final VMDPinWidget pin = new VMDPinWidget(scene);
+                                pin.setPinName("init");
+                                pin.setPinName("Swag: " + poti.getPosition());
                                 simpleWidget.addChild(pin);
+
+//                                poti.setPositionCallbackPeriod(100);
+//                                poti.addListener(new BrickletLinearPoti.PositionListener() {
+//                                    @Override
+//                                    public void position(int position) {
+//                                        pin.setPinName("Swag: " + position);
+//                                    }
+//                                });
                             }
                         } catch (TimeoutException ex) {
-                            Exceptions.printStackTrace(ex);
+                            ex.printStackTrace();
                         }
                     }
                 }
             }
+            private static final Logger LOG = Logger.getLogger(.class.getName());
         }));
 
         // add it to our scrollpane
