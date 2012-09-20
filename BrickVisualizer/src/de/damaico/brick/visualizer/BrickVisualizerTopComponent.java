@@ -4,11 +4,16 @@
  */
 package de.damaico.brick.visualizer;
 
+import java.awt.Point;
+import java.awt.datatransfer.Transferable;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.action.ConnectorState;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
+import org.netbeans.api.visual.widget.Widget;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
@@ -42,16 +47,33 @@ public final class BrickVisualizerTopComponent extends TopComponent {
         setName(Bundle.CTL_BrickVisualizerTopComponent());
         setToolTipText(Bundle.HINT_BrickVisualizerTopComponent());
         
-        Scene scene = new Scene();
+        // create scene
+        final Scene scene = new Scene();
         
-        LayerWidget baseLayer = new LayerWidget(scene);
+        // add baseLayer to scene
+        final LayerWidget baseLayer = new LayerWidget(scene);
         scene.addChild(baseLayer);
         
-        LabelWidget helloWorldWidget = new LabelWidget(scene, "Hello World!");
-        baseLayer.addChild(helloWorldWidget);
         
-        helloWorldWidget.getActions().addAction(ActionFactory.createMoveAction());
+        // make the scene accept things
+        scene.getActions().addAction(ActionFactory.createAcceptAction(new AcceptProvider() {
+
+            @Override
+            public ConnectorState isAcceptable(Widget widget, Point point, Transferable t) {
+                return ConnectorState.ACCEPT;
+            }
+
+            @Override
+            public void accept(Widget widget, Point point, Transferable t) {
+                // add hello world widget to baseLayer and make it moveable
+                LabelWidget helloWorldWidget = new LabelWidget(scene, "Hello World!");
+                helloWorldWidget.setPreferredLocation(point);
+                helloWorldWidget.getActions().addAction(ActionFactory.createMoveAction());
+                baseLayer.addChild(helloWorldWidget);
+            }
+        }));
         
+        // add it to our scrollpane
         jScrollPane1.setViewportView(scene.createView());
 
     }
