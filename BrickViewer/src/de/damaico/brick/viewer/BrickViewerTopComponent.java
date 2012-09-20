@@ -54,20 +54,13 @@ public final class BrickViewerTopComponent extends TopComponent implements Explo
         
         setLayout(new BorderLayout());
 
-        BeanTreeView ov = new BeanTreeView();
+        BeanTreeView btv = new BeanTreeView();
         
-//        ov.getOutline().setRootVisible(false);
+        btv.setRootVisible(false);
         
-//        ov.setPropertyColumns(
-//                "uid","Device ID",
-//                "stackId","Stack ID",
-//                "color","Device Color",
-//                "file","Device File"
-//                );
-//        
         manager.setRootContext(rootNode);
         
-        add(ov, BorderLayout.CENTER);
+        add(btv, BorderLayout.CENTER);
         
         associateLookup(ExplorerUtils.createLookup(manager, getActionMap()));
         
