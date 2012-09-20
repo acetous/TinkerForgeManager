@@ -11,6 +11,8 @@ import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.explorer.view.IconView;
+import org.openide.explorer.view.OutlineView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -53,11 +55,19 @@ public final class BrickViewerTopComponent extends TopComponent implements Explo
         rootNode.setDisplayName("Devices");
         
         setLayout(new BorderLayout());
-        BeanTreeView beanTreeView = new BeanTreeView();
         
         manager.setRootContext(rootNode);
         
-        add(beanTreeView, BorderLayout.CENTER);
+//        BeanTreeView beanTreeView = new BeanTreeView();
+//        add(beanTreeView, BorderLayout.CENTER);
+        
+//        IconView iconView = new IconView();
+//        add(iconView, BorderLayout.EAST);
+
+        OutlineView outlineView = new OutlineView("Devices");
+        outlineView.getOutline().setRootVisible(false);
+        outlineView.setPropertyColumns("uID", "Device UID");
+        add(outlineView, BorderLayout.CENTER);
         
         // publish to TopComponent Lookup
         associateLookup(ExplorerUtils.createLookup(manager, getActionMap()));
