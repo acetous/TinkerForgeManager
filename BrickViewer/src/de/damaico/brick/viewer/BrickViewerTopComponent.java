@@ -11,8 +11,6 @@ import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
-import org.openide.explorer.view.IconView;
-import org.openide.explorer.view.OutlineView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -41,40 +39,43 @@ preferredID = "BrickViewerTopComponent")
     "HINT_BrickViewerTopComponent=This is a BrickViewer window"
 })
 public final class BrickViewerTopComponent extends TopComponent implements ExplorerManager.Provider {
-    
-    private ExplorerManager manager = new ExplorerManager();
 
+    private ExplorerManager manager = new ExplorerManager();
+    
     public BrickViewerTopComponent() {
         initComponents();
         setName(Bundle.CTL_BrickViewerTopComponent());
         setToolTipText(Bundle.HINT_BrickViewerTopComponent());
-
-        BrickChildFactory brickChildFactory = new BrickChildFactory();
         
-        Node rootNode = new AbstractNode(Children.create(brickChildFactory, true));
+        BrickChildFactory bcf = new BrickChildFactory();
+        
+        Node rootNode = new AbstractNode(Children.create(bcf, true));
         rootNode.setDisplayName("Devices");
         
         setLayout(new BorderLayout());
+
+        BeanTreeView ov = new BeanTreeView();
         
+//        ov.getOutline().setRootVisible(false);
+        
+//        ov.setPropertyColumns(
+//                "uid","Device ID",
+//                "stackId","Stack ID",
+//                "color","Device Color",
+//                "file","Device File"
+//                );
+//        
         manager.setRootContext(rootNode);
         
-//        BeanTreeView beanTreeView = new BeanTreeView();
-//        add(beanTreeView, BorderLayout.CENTER);
+        add(ov, BorderLayout.CENTER);
         
-//        IconView iconView = new IconView();
-//        add(iconView, BorderLayout.EAST);
-
-        OutlineView outlineView = new OutlineView("Devices");
-        outlineView.getOutline().setRootVisible(false);
-        outlineView.setPropertyColumns(
-                "uID", "Device UID",
-                "file", "File",
-                "color", "Device Color"
-                );
-        add(outlineView, BorderLayout.CENTER);
-        
-        // publish to TopComponent Lookup
         associateLookup(ExplorerUtils.createLookup(manager, getActionMap()));
+        
+    }
+    
+    @Override
+    public ExplorerManager getExplorerManager() {
+        return manager;
     }
 
     /**
@@ -121,8 +122,5 @@ public final class BrickViewerTopComponent extends TopComponent implements Explo
         // TODO read your settings according to their version
     }
 
-    @Override
-    public ExplorerManager getExplorerManager() {
-        return manager;
-    }
+    
 }

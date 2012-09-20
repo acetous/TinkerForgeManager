@@ -31,22 +31,14 @@ import com.tinkerforge.BrickletVoltage;
 import com.tinkerforge.Device;
 import java.util.ArrayList;
 
-/**
- *
- * @author herbi
- */
 public class DeviceClassifier {
-    
+
     private static DeviceClassifier instance = null;
     ArrayList<DeviceIdentifier> stackDevices;
     ArrayList<Object> classifiedDevices = new ArrayList<>();
     DeviceIdentifier model;
-    
-    private DeviceClassifier() {
-        
-    }
-    
-    public static DeviceClassifier getInstance() {
+
+    public synchronized static DeviceClassifier getInstance() {
         if (instance == null) {
             instance = new DeviceClassifier();
         }
@@ -54,93 +46,89 @@ public class DeviceClassifier {
     }
 
     public Device classifyDevice(DeviceIdentifier model) {
-
         Device device = null;
         DeviceIdentifier tmpDM = model;
         String cutted = tmpDM.getName().substring(0, tmpDM.getName().trim().length() - 4).trim();
-
         switch (cutted) {
             case "Ambient Light Bricklet":
-                device = new BrickletAmbientLight(tmpDM.getuID());
+                device = new BrickletAmbientLight(tmpDM.getUid());
                 break;
             case "AnalogIn Bricklet":
-                device = new BrickletAnalogIn(tmpDM.getuID());
+                device = new BrickletAnalogIn(tmpDM.getUid());
                 break;
             case "AnalogOut Bricklet":
-                device = new BrickletAnalogOut(tmpDM.getuID());
+                device = new BrickletAnalogOut(tmpDM.getUid());
                 break;
             case "Buzzer Bricklet":
-                device = new BrickletPiezoBuzzer(tmpDM.getuID());
+                device = new BrickletPiezoBuzzer(tmpDM.getUid());
                 break;
             case "Current12 Bricklet":
-                device = new BrickletCurrent12(tmpDM.getuID());
+                device = new BrickletCurrent12(tmpDM.getUid());
                 break;
             case "Current25 Bricklet":
-                device = new BrickletCurrent25(tmpDM.getuID());
+                device = new BrickletCurrent25(tmpDM.getUid());
                 break;
             case "DC Brick":
-                device = new BrickDC(tmpDM.getuID());
+                device = new BrickDC(tmpDM.getUid());
                 break;
             case "Distance IR Bricklet":
-                device = new BrickletDistanceIR(tmpDM.getuID());
+                device = new BrickletDistanceIR(tmpDM.getUid());
                 break;
             case "Humidity Bricklet":
-                device = new BrickletHumidity(tmpDM.getuID());
+                device = new BrickletHumidity(tmpDM.getUid());
                 break;
             case "IMU Brick":
-                device = new BrickIMU(tmpDM.getuID());
+                device = new BrickIMU(tmpDM.getUid());
                 break;
             case "IO-16 Bricklet":
-                device = new BrickletIO16(tmpDM.getuID());
+                device = new BrickletIO16(tmpDM.getUid());
                 break;
             case "IO-4 Bricklet":
-                device = new BrickletIO4(tmpDM.getuID());
+                device = new BrickletIO4(tmpDM.getUid());
                 break;
             case "Joystick Bricklet":
-                device = new BrickletJoystick(tmpDM.getuID());
+                device = new BrickletJoystick(tmpDM.getUid());
                 break;
             case "LCD 16x2 Bricklet":
-                device = new BrickletLCD16x2(tmpDM.getuID());
+                device = new BrickletLCD16x2(tmpDM.getUid());
                 break;
             case "LCD 20x4 Bricklet":
-                device = new BrickletLCD20x4(tmpDM.getuID());
+                device = new BrickletLCD20x4(tmpDM.getUid());
                 break;
             case "Master Brick":
-                device = new BrickMaster(tmpDM.getuID());
+                device = new BrickMaster(tmpDM.getUid());
                 break;
-            case "Linear Poti Bricklet":
-                device = new BrickletLinearPoti(tmpDM.getuID());
+            case "Poti Linear Bricklet":
+                device = new BrickletLinearPoti(tmpDM.getUid());
                 break;
             case "Rotary Poti Bricklet":
-                device = new BrickletRotaryPoti(tmpDM.getuID());
+                device = new BrickletRotaryPoti(tmpDM.getUid());
                 break;
             case "Relay Dual Bricklet":
-                device = new BrickletDualRelay(tmpDM.getuID());
+                device = new BrickletDualRelay(tmpDM.getUid());
                 break;
             case "Servo Brick":
-                device = new BrickServo(tmpDM.getuID());
+                device = new BrickServo(tmpDM.getUid());
                 break;
             case "Stepper Brick":
-                device = new BrickStepper(tmpDM.getuID());
+                device = new BrickStepper(tmpDM.getUid());
                 break;
             case "Temperature AmbientBricklet":
-                device = new BrickletTemperature(tmpDM.getuID());
+                device = new BrickletTemperature(tmpDM.getUid());
                 break;
             case "Temperature IR Bricklet":
-                device = new BrickletTemperatureIR(tmpDM.getuID());
+                device = new BrickletTemperatureIR(tmpDM.getUid());
                 break;
             case "Voltage Bricklet":
-                device = new BrickletVoltage(tmpDM.getuID());
+                device = new BrickletVoltage(tmpDM.getUid());
                 break;
-// Diese werden nicht erkannt:
             case "Chibi Extension":
             case "StepDown Brick":
             case "RS485 Extension":
         }
-//        System.out.println("Device: " + device.toString());
-
-        model.setDeviceTyp(device);
-
+        model.setDeviceType(device);
         return device;
+//        return model;
     }
+
 }

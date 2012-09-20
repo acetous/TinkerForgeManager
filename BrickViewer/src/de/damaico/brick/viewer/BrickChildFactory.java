@@ -1,55 +1,45 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.damaico.brick.viewer;
 
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
+import java.awt.Color;
 import java.beans.IntrospectionException;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 
-/**
- *
- * @author herbi
- */
-public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
-    
-    private final String HOST = "localhost";
-    private final int PORT = 4223;
+public class BrickChildFactory extends ChildFactory<Device> {
 
-    // will be called automatically in the background
+    private final String host = "localhost";
+    private final int port = 4223;
+    DeviceClassifier dc = DeviceClassifier.getInstance();
+
+    //THIS METHOD IS AUTOMATICALLY CALLED IN THE BACKGROUND:
     @Override
-    protected boolean createKeys(final List<DeviceIdentifier> list) {
+    protected boolean createKeys(final List<Device> list) {
         try {
-            IPConnection ipc = new IPConnection(HOST, PORT);
+            IPConnection ipc = new IPConnection(host, port);
             ipc.enumerate(new IPConnection.EnumerateListener() {
-
                 @Override
                 public void enumerate(String uid, String name, short stackID, boolean isNew) {
-                    DeviceIdentifier deviceIdentifier = new DeviceIdentifier(uid, name, stackID);
-                    list.add(deviceIdentifier);
+                    list.add(DeviceClassifier.getInstance().classifyDevice(new DeviceIdentifier(name, uid, stackID, Color.BLUE, new File(""))));
                 }
             });
         } catch (IOException ex) {
-            Logger.getLogger(BrickChildFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
         return true;
     }
 
-    
     @Override
-    protected Node createNodeForKey(DeviceIdentifier device) {
-        Node node = null;
+    protected Node createNodeForKey(Device key) {
+        BrickNode node = null;
         try {
-            node = new BrickNode(device);
+            node = new BrickNode(key);
         } catch (IntrospectionException ex) {
-            Logger.getLogger(BrickChildFactory.class.getName()).log(Level.SEVERE, null, ex);
+            Exceptions.printStackTrace(ex);
         }
         return node;
     }
