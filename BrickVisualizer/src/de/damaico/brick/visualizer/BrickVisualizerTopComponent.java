@@ -4,7 +4,10 @@
  */
 package de.damaico.brick.visualizer;
 
+import com.tinkerforge.BrickMaster;
+import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.Device;
+import com.tinkerforge.IPConnection.TimeoutException;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.beans.BeanInfo;
@@ -13,6 +16,7 @@ import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.ConnectorState;
 import org.netbeans.api.visual.vmd.VMDNodeWidget;
+import org.netbeans.api.visual.vmd.VMDPinWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
@@ -22,6 +26,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeTransfer;
+import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
@@ -81,7 +86,24 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                         simpleWidget.setNodeImage(node.getIcon(BeanInfo.ICON_COLOR_16x16));
                         simpleWidget.setPreferredLocation(point);
                         simpleWidget.getActions().addAction(ActionFactory.createMoveAction());
+                        simpleWidget.setCheckClipping(true);
                         baseLayer.addChild(simpleWidget);
+
+                        try {
+                            if (device instanceof BrickMaster) {
+                                BrickMaster bm = (BrickMaster) device;
+                                VMDPinWidget pin = new VMDPinWidget(scene);
+                                pin.setPinName("Temperature: " + bm.getChipTemperature());
+                                simpleWidget.addChild(pin);
+                            } else if (device instanceof BrickletLinearPoti) {
+                                BrickletLinearPoti blp = (BrickletLinearPoti) device;
+                                VMDPinWidget pin = new VMDPinWidget(scene);
+                                pin.setPinName("Swag: " + blp.getPosition());
+                                simpleWidget.addChild(pin);
+                            }
+                        } catch (TimeoutException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
                     }
                 }
             }

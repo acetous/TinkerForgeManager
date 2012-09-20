@@ -28,7 +28,7 @@ public class BrickMasterNode extends BeanNode {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowManager.getDefault().findTopComponent("MasterBrickEditorTopComponent").open();
+//                WindowManager.getDefault().findTopComponent("MasterBrickEditorTopComponent").open();
             }
             
         };
