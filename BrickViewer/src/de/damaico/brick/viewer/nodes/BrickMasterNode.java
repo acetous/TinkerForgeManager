@@ -9,7 +9,6 @@ import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.nodes.BeanNode;
 import org.openide.nodes.Children;
 import org.openide.util.lookup.Lookups;
-import org.openide.windows.WindowManager;
 
 public class BrickMasterNode extends BeanNode {
     

@@ -11,6 +11,8 @@ import com.tinkerforge.IPConnection.TimeoutException;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.beans.BeanInfo;
+import java.util.ArrayList;
+import java.util.List;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
@@ -53,6 +55,8 @@ preferredID = "BrickVisualizerTopComponent")
 })
 public final class BrickVisualizerTopComponent extends TopComponent {
 
+    private List<Device> uniqueDevices = new ArrayList<Device>();
+
     public BrickVisualizerTopComponent() {
         initComponents();
         setName(Bundle.CTL_BrickVisualizerTopComponent());
@@ -70,7 +74,16 @@ public final class BrickVisualizerTopComponent extends TopComponent {
         scene.getActions().addAction(ActionFactory.createAcceptAction(new AcceptProvider() {
             @Override
             public ConnectorState isAcceptable(Widget widget, Point point, Transferable t) {
-                return ConnectorState.ACCEPT;
+                Node node = NodeTransfer.node(t, NodeTransfer.DND_COPY_OR_MOVE);
+                if (node != null) {
+                    Device device = node.getLookup().lookup(Device.class);
+                    if (device != null) {
+                        if (!uniqueDevices.contains(device)) {
+                            return ConnectorState.ACCEPT;
+                        }
+                    }
+                }
+                return ConnectorState.REJECT;
             }
 
             @Override
@@ -80,6 +93,10 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                     Device device = node.getLookup().lookup(Device.class);
 
                     if (device != null) {
+                        // add device
+                        uniqueDevices.add(device);
+                        
+                        // create widget
                         VMDNodeWidget simpleWidget;
                         simpleWidget = new VMDNodeWidget(scene);
                         simpleWidget.setNodeName(device.getClass().getSimpleName());
@@ -89,6 +106,7 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                         simpleWidget.setCheckClipping(true);
                         baseLayer.addChild(simpleWidget);
 
+                        // show device-specific information
                         try {
                             if (device instanceof BrickMaster) {
                                 BrickMaster bm = (BrickMaster) device;
