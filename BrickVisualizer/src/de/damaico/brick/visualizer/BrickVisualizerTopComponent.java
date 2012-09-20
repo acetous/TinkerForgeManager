@@ -4,6 +4,7 @@
  */
 package de.damaico.brick.visualizer;
 
+import com.tinkerforge.Device;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -16,6 +17,8 @@ import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.nodes.Node;
+import org.openide.nodes.NodeTransfer;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
@@ -46,18 +49,17 @@ public final class BrickVisualizerTopComponent extends TopComponent {
         initComponents();
         setName(Bundle.CTL_BrickVisualizerTopComponent());
         setToolTipText(Bundle.HINT_BrickVisualizerTopComponent());
-        
+
         // create scene
         final Scene scene = new Scene();
-        
+
         // add baseLayer to scene
         final LayerWidget baseLayer = new LayerWidget(scene);
         scene.addChild(baseLayer);
-        
-        
+
+
         // make the scene accept things
         scene.getActions().addAction(ActionFactory.createAcceptAction(new AcceptProvider() {
-
             @Override
             public ConnectorState isAcceptable(Widget widget, Point point, Transferable t) {
                 return ConnectorState.ACCEPT;
@@ -65,14 +67,27 @@ public final class BrickVisualizerTopComponent extends TopComponent {
 
             @Override
             public void accept(Widget widget, Point point, Transferable t) {
-                // add hello world widget to baseLayer and make it moveable
-                LabelWidget helloWorldWidget = new LabelWidget(scene, "Hello World!");
-                helloWorldWidget.setPreferredLocation(point);
-                helloWorldWidget.getActions().addAction(ActionFactory.createMoveAction());
-                baseLayer.addChild(helloWorldWidget);
+                Node node = NodeTransfer.node(t, NodeTransfer.DND_COPY_OR_MOVE);
+                if (node != null) {
+                    Device device = node.getLookup().lookup(Device.class);
+
+                    if (device != null) {
+                        // add hello world widget to baseLayer and make it moveable
+                        LabelWidget helloWorldWidget = new LabelWidget(scene, "Hello " + device.toString());
+                        helloWorldWidget.setPreferredLocation(point);
+                        helloWorldWidget.getActions().addAction(ActionFactory.createMoveAction());
+                        baseLayer.addChild(helloWorldWidget);
+                    } else {
+                        // add hello world widget to baseLayer and make it moveable
+                        LabelWidget helloWorldWidget = new LabelWidget(scene, "Nope!");
+                        helloWorldWidget.setPreferredLocation(point);
+                        helloWorldWidget.getActions().addAction(ActionFactory.createMoveAction());
+                        baseLayer.addChild(helloWorldWidget);
+                    }
+                }
             }
         }));
-        
+
         // add it to our scrollpane
         jScrollPane1.setViewportView(scene.createView());
 
@@ -99,10 +114,10 @@ public final class BrickVisualizerTopComponent extends TopComponent {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
     @Override
     public void componentOpened() {
         // TODO add custom code on component opening

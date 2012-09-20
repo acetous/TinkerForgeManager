@@ -113,8 +113,9 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
                     device = new BrickIMU(tmpDM.getUid());
                     break;
                 case "IO-16 Bricklet":
-                    device = new BrickletIO16(tmpDM.getUid());
-                    nodes.add(new IO16Node(device));
+                    BrickletIO16 io16 = new BrickletIO16(tmpDM.getUid());
+                    device = io16;
+                    nodes.add(new IO16Node(io16));
                     break;
                 case "IO-4 Bricklet":
                     device = new BrickletIO4(tmpDM.getUid());
