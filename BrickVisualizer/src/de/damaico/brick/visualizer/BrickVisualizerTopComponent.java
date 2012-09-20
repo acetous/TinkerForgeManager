@@ -12,6 +12,7 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.ConnectorState;
+import org.netbeans.api.visual.vmd.VMDNodeWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
@@ -74,19 +75,13 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                     Device device = node.getLookup().lookup(Device.class);
 
                     if (device != null) {
-                        IconNodeWidget simpleWidget;
-                        simpleWidget = new IconNodeWidget(scene);
-                        simpleWidget.setLabel(device.getClass().toString());
-                        simpleWidget.setImage(node.getIcon(BeanInfo.ICON_COLOR_16x16));
+                        VMDNodeWidget simpleWidget;
+                        simpleWidget = new VMDNodeWidget(scene);
+                        simpleWidget.setNodeName(device.getClass().getSimpleName());
+                        simpleWidget.setNodeImage(node.getIcon(BeanInfo.ICON_COLOR_16x16));
                         simpleWidget.setPreferredLocation(point);
                         simpleWidget.getActions().addAction(ActionFactory.createMoveAction());
                         baseLayer.addChild(simpleWidget);
-                    } else {
-                        // add hello world widget to baseLayer and make it moveable
-                        LabelWidget helloWorldWidget = new LabelWidget(scene, "Nope!");
-                        helloWorldWidget.setPreferredLocation(point);
-                        helloWorldWidget.getActions().addAction(ActionFactory.createMoveAction());
-                        baseLayer.addChild(helloWorldWidget);
                     }
                 }
             }
