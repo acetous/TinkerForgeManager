@@ -68,6 +68,7 @@ public final class BrickViewerTopComponent extends TopComponent implements Explo
         outlineView.getOutline().setRootVisible(false);
         outlineView.setPropertyColumns(
                 "uID", "Device UID",
+                "file", "File",
                 "color", "Device Color"
                 );
         add(outlineView, BorderLayout.CENTER);

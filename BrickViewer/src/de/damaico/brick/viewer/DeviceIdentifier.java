@@ -6,6 +6,7 @@ package de.damaico.brick.viewer;
 
 import com.tinkerforge.Device;
 import java.awt.Color;
+import java.io.File;
 
 /**
  *
@@ -19,6 +20,7 @@ public class DeviceIdentifier {
     private Device deviceTyp;
     private String imageURL;
     private Color color;
+    private File file;
 
     public DeviceIdentifier(String uID, String name, short stackID) {
         this.uID = uID;
@@ -52,5 +54,13 @@ public class DeviceIdentifier {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }
