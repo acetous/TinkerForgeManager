@@ -135,7 +135,6 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                     }
                 }
             }
-            private static final Logger LOG = Logger.getLogger(.class.getName());
         }));
 
         // add it to our scrollpane
