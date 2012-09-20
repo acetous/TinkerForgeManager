@@ -5,18 +5,20 @@
 package de.damaico.brick.viewer;
 
 import com.tinkerforge.Device;
+import java.awt.Color;
 
 /**
  *
  * @author herbi
  */
 public class DeviceIdentifier {
-     private String uID;
+
+    private String uID;
     private String name;
     private short stackID;
     private Device deviceTyp;
     private String imageURL;
-
+    private Color color;
 
     public DeviceIdentifier(String uID, String name, short stackID) {
         this.uID = uID;
@@ -32,7 +34,6 @@ public class DeviceIdentifier {
         return stackID;
     }
 
-  
     public String getuID() {
         return uID;
     }
@@ -43,5 +44,13 @@ public class DeviceIdentifier {
 
     public void setDeviceTyp(Device deviceTyp) {
         this.deviceTyp = deviceTyp;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
