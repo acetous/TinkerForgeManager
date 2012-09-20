@@ -32,8 +32,8 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
 
                 @Override
                 public void enumerate(String uid, String name, short stackID, boolean isNew) {
-                    DeviceIdentifier deviceModel = new DeviceIdentifier(uid, name, stackID);
-                    list.add(deviceModel);
+                    DeviceIdentifier deviceIdentifier = new DeviceIdentifier(uid, name, stackID);
+                    list.add(deviceIdentifier);
                 }
             });
         } catch (IOException ex) {
