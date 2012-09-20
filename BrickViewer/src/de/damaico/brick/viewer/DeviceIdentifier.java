@@ -11,32 +11,37 @@ import com.tinkerforge.Device;
  * @author herbi
  */
 public class DeviceIdentifier {
+     private String uID;
     private String name;
-    private String uid;
-    private short stackId;
-    private Device deviceType;
+    private short stackID;
+    private Device deviceTyp;
+    private String imageURL;
 
-    public DeviceIdentifier(String name, String uid, short stackId) {
+
+    public DeviceIdentifier(String uID, String name, short stackID) {
+        this.uID = uID;
         this.name = name;
-        this.uid = uid;
-        this.stackId = stackId;
+        this.stackID = stackID;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getUid() {
-        return uid;
+    public short getStackID() {
+        return stackID;
     }
 
-    public short getStackId() {
-        return stackId;
+  
+    public String getuID() {
+        return uID;
     }
 
-    public Device getDeviceType() {
-        return deviceType;
+    public Device getDeviceTyp() {
+        return deviceTyp;
     }
-    
-    
+
+    public void setDeviceTyp(Device deviceTyp) {
+        this.deviceTyp = deviceTyp;
+    }
 }

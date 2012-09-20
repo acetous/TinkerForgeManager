@@ -15,9 +15,9 @@ import org.openide.nodes.BeanNode;
  */
 public class BrickNode extends BeanNode {
 
-    public BrickNode(String name) throws IntrospectionException {
-        super(name);
-        setDisplayName(name);
+    public BrickNode(DeviceIdentifier device) throws IntrospectionException {
+        super(device);
+        setDisplayName(device.getName());
     }
     
 }
