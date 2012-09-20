@@ -29,7 +29,9 @@ import com.tinkerforge.IPConnection;
 import de.damaico.brick.viewer.nodes.AmbientLightNode;
 import de.damaico.brick.viewer.nodes.BrickMasterNode;
 import de.damaico.brick.viewer.nodes.DistanceIRNode;
+import de.damaico.brick.viewer.nodes.IO16Node;
 import de.damaico.brick.viewer.nodes.LCD2044Node;
+import de.damaico.brick.viewer.nodes.LinearPotiNode;
 import java.awt.Color;
 import java.beans.IntrospectionException;
 import java.io.File;
@@ -113,6 +115,7 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
                     break;
                 case "IO-16 Bricklet":
                     device = new BrickletIO16(tmpDM.getUid());
+                    nodes.add(new IO16Node(device));
                     break;
                 case "IO-4 Bricklet":
                     device = new BrickletIO4(tmpDM.getUid());
@@ -131,8 +134,9 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
                     device = new BrickMaster(tmpDM.getUid());
                     nodes.add(new BrickMasterNode(device));
                     break;
-                case "Poti Linear Bricklet":
+                case "Linear Poti Bricklet":
                     device = new BrickletLinearPoti(tmpDM.getUid());
+                    nodes.add(new LinearPotiNode(device));
                     break;
                 case "Rotary Poti Bricklet":
                     device = new BrickletRotaryPoti(tmpDM.getUid());
