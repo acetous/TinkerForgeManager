@@ -4,6 +4,7 @@
  */
 package de.damaico.connection.analyzer;
 
+import de.damaico.api.ConnectionAnalyzerCapability;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -28,15 +29,16 @@ displayName = "#CTL_AnalyzeConnectionsActionListener")
 @Messages("CTL_AnalyzeConnectionsActionListener=Analyze Connections")
 public final class AnalyzeConnectionsActionListener implements ActionListener {
 
-    private final List<ConnectionWidget> contextList;
+    private final List<ConnectionAnalyzerCapability> contextList;
 
-    public AnalyzeConnectionsActionListener(List<ConnectionWidget> context) {
+    public AnalyzeConnectionsActionListener(List<ConnectionAnalyzerCapability> context) {
         this.contextList = context;
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        for (ConnectionWidget widget : contextList) {
+        for (ConnectionAnalyzerCapability cac : contextList) {
+            ConnectionWidget widget = cac.analyze();
             String source = widget.getSourceAnchor().getRelatedWidget().getToolTipText();
             String target = widget.getTargetAnchor().getRelatedWidget().getToolTipText();
 

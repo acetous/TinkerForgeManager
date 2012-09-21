@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: de.damaico.api
+OpenIDE-Module-Localizing-Bundle: de/damaico/api/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

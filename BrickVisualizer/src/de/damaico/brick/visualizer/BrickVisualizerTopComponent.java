@@ -8,6 +8,7 @@ import com.tinkerforge.BrickMaster;
 import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection.TimeoutException;
+import de.damaico.api.ConnectionAnalyzerCapability;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
@@ -112,7 +113,7 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                         simpleWidget.setPreferredLocation(point);
                         simpleWidget.setCheckClipping(true);
                         baseLayer.addChild(simpleWidget);
-                        
+
                         // add the ability to connect devices
                         simpleWidget.getActions().addAction(ActionFactory.createExtendedConnectAction(connectionLayer, new DeviceConnectorProvider()));
                         // add the ability to move the device
@@ -150,14 +151,28 @@ public final class BrickVisualizerTopComponent extends TopComponent {
 
         // add it to our scrollpane
         jScrollPane1.setViewportView(scene.createView());
-        
+
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(scene.createSatelliteView(), BorderLayout.CENTER);
 
         associateLookup(new AbstractLookup(ic));
     }
-    
     private InstanceContent ic = new InstanceContent();
+
+    private class BrickConnectionAnalyzerCapability implements ConnectionAnalyzerCapability {
+
+        private ConnectionWidget widget;
+
+        public BrickConnectionAnalyzerCapability(ConnectionWidget widget) {
+            this.widget = widget;
+        }
+
+        @Override
+        public ConnectionWidget analyze() {
+            ic.remove(this);
+            return widget;
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -252,10 +267,10 @@ public final class BrickVisualizerTopComponent extends TopComponent {
             connection.setTargetAnchorShape(AnchorShape.TRIANGLE_HOLLOW);
             connection.setSourceAnchor(AnchorFactory.createRectangularAnchor(source));
             connection.setTargetAnchor(AnchorFactory.createRectangularAnchor(target));
-            
+
             connectionLayer.addChild(connection);
-            
-            ic.add(connection);
+
+            ic.add(new BrickConnectionAnalyzerCapability(connection));
         }
     }
 }
