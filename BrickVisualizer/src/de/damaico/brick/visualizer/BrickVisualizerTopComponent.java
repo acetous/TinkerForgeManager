@@ -37,6 +37,8 @@ import org.openide.nodes.NodeTransfer;
 import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  * Top component which displays something.
@@ -151,7 +153,10 @@ public final class BrickVisualizerTopComponent extends TopComponent {
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(scene.createSatelliteView(), BorderLayout.CENTER);
 
+        associateLookup(new AbstractLookup(ic));
     }
+    
+    private InstanceContent ic = new InstanceContent();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -248,6 +253,8 @@ public final class BrickVisualizerTopComponent extends TopComponent {
             connection.setTargetAnchor(AnchorFactory.createRectangularAnchor(target));
             
             connectionLayer.addChild(connection);
+            
+            ic.add(connection);
         }
     }
 }

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: de.damaico.connection.analyzer
+OpenIDE-Module-Localizing-Bundle: de/damaico/connection/analyzer/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
