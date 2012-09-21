@@ -37,6 +37,11 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.NodeChangeEvent;
+import java.util.prefs.NodeChangeListener;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
@@ -133,7 +138,7 @@ public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
                     break;
                 case "Master Brick":
                     BrickMaster bm = new BrickMaster(tmpDM.getUid());
-                    device  = bm;
+                    device = bm;
                     nodes.add(new BrickMasterNode(bm));
                     break;
                 case "Linear Poti Bricklet":
