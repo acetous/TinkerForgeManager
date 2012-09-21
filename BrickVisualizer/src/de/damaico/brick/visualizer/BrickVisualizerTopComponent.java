@@ -107,6 +107,7 @@ public final class BrickVisualizerTopComponent extends TopComponent {
                         VMDNodeWidget simpleWidget;
                         simpleWidget = new VMDNodeWidget(scene);
                         simpleWidget.setNodeName(device.getClass().getSimpleName());
+                        simpleWidget.setToolTipText(device.getClass().getSimpleName());
                         simpleWidget.setNodeImage(node.getIcon(BeanInfo.ICON_COLOR_16x16));
                         simpleWidget.setPreferredLocation(point);
                         simpleWidget.setCheckClipping(true);

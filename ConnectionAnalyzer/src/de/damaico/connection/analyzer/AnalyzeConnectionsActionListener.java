@@ -6,6 +6,7 @@ package de.damaico.connection.analyzer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -34,6 +35,9 @@ public final class AnalyzeConnectionsActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        // TODO use context
+        String source = context.getSourceAnchor().getRelatedWidget().getToolTipText();
+        String target = context.getTargetAnchor().getRelatedWidget().getToolTipText();
+        
+        JOptionPane.showMessageDialog(null, "Connection from " + source + " to " + target + ".");
     }
 }
