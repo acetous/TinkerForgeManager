@@ -40,11 +40,12 @@ import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.openide.util.NbPreferences;
 
 public class BrickChildFactory extends ChildFactory<DeviceIdentifier> {
 
-    private final String host = "localhost";
-    private final int port = 4223;
+    private final String host = NbPreferences.forModule(TinkerForgePanel.class).get("hostProperty", "localhost");
+    private final int port = Integer.parseInt(NbPreferences.forModule(TinkerForgePanel.class).get("portProperty", "4223"));
     private IPConnection ipc;
 
     //THIS METHOD IS AUTOMATICALLY CALLED IN THE BACKGROUND:
